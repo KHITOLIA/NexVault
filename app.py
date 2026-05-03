@@ -1,4 +1,3 @@
-from send_email import init_mail
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
@@ -22,7 +21,6 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-init_mail(app)
 
 
 # ================= USER TABLE =================
