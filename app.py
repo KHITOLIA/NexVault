@@ -1,3 +1,4 @@
+from send_email import init_mail
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
@@ -21,6 +22,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+init_mail(app)
 
 
 # ================= USER TABLE =================
@@ -90,9 +92,14 @@ def register():
         )
         db.session.add(user)
         db.session.commit()
-        
+
         # Send email AFTER saving — so a mail failure doesn't break registration
-        # send_welcome_email(user.email, user.name, user.account_no, request.form['pin'])
+        try:
+
+            send_welcome_email(user.email, user.name, user.account_no, request.form['pin'])
+        except Exception as e:
+            print(f"Email failed (non-critical): {e}")
+
         msg = f'Account created successfully! Account No: {account_no} — please login.'
         return render_template('home.html', msg=msg)
 
@@ -346,7 +353,7 @@ def forget_pin():
             user.pin = hash_pin(new_pin)
             db.session.commit()
             try:
-                from send_email import send_forget_pin
+
                 send_forget_pin(user.name, user.account_no, new_pin, user.email)
             except Exception as e:
                 print(f"Email failed: {e}")
