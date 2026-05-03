@@ -2,7 +2,7 @@
 
 # 🌐 NexVault – Full Stack Banking System
 
-🔗 **Live Application:** [https://nexvaullt.up.railway.app/](https://nexvaullt.up.railway.app/)
+🔗 **Live Application:** [https://nexvaullt.up.railway.app/](https://nexvaullt.up.railway.app)
 
 ---
 
