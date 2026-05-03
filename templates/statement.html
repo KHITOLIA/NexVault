@@ -120,7 +120,7 @@
                             </span>
                         </td>
                         <td class="date-cell">
-                            <span class="date-main">{{ '••' + (tr.receive_account_no if is_sender else tr.send_account_no)[-4:] }}</span>
+                            <span class="date-main">{{ tr.receive_account_no if is_sender else tr.send_account_no }}</span>
                             <span class="date-time">{{ 'To' if is_sender else 'From' }}</span>
                         </td>
                         <td class="amount-cell {{ 'amount-red' if is_sender else 'amount-green' }}">
