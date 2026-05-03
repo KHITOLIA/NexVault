@@ -66,7 +66,7 @@
 import os
 import requests
 
-RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+RESEND_API_KEY = "re_XF3JKixf_CGQDyRnPeyvGME83Zh12E6Ms"
 MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", "onboarding@resend.dev")
 
 
