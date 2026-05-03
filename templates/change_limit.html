@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Manage Limits{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="glass-card" style="width: 100%; max-width: 500px;">
+        <div class="card-corner-bl"></div>
+
+        <div class="text-center">
+            <div style="display: inline-flex; width: 70px; height: 70px; border-radius: 50%; background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.25); color: var(--gold); align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px; animation: iconFloat 3s ease-in-out infinite;">
+                ⚖️
+            </div>
+            <p class="page-title">Transaction Limits</p>
+            <p class="page-subtitle">Manage your daily spending caps</p>
+        </div>
+
+        {% if msg %}
+        <div class="alert {% if 'successfully' in msg %}alert-success{% else %}alert-error{% endif %}">
+            <span>{% if 'successfully' in msg %}✦{% else %}⚠{% endif %}</span> {{ msg }}
+        </div>
+        {% endif %}
+
+        <!-- Limit Type Tabs -->
+        <div class="limit-tabs">
+            <button class="limit-tab active" data-type="deposit" onclick="switchTab('deposit', this)">Deposit</button>
+            <button class="limit-tab" data-type="withdraw" onclick="switchTab('withdraw', this)">Withdraw</button>
+            <button class="limit-tab" data-type="transfer" onclick="switchTab('transfer', this)">Transfer</button>
+        </div>
+
+        <form method="POST" action="/change_limit">
+            <input type="hidden" name="limit_type" id="limit_type_hidden" value="deposit">
+
+            <!-- Deposit Panel -->
+            <div class="limit-panel" id="panel-deposit">
+                <div class="panel-icon deposit">↓</div>
+                <p class="panel-title">Daily Deposit Limit</p>
+                <div class="form-group">
+                    <label class="form-label" for="deposit_limit">New Deposit Limit (INR)</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--success); z-index: 1; pointer-events: none;">₹</span>
+                        <input type="number" id="deposit_limit" name="deposit_limit" class="form-input" style="padding-left: 38px; font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;" placeholder="20000" min="1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Withdraw Panel -->
+            <div class="limit-panel" id="panel-withdraw" style="display: none;">
+                <div class="panel-icon withdraw">↑</div>
+                <p class="panel-title">Daily Withdrawal Limit</p>
+                <div class="form-group">
+                    <label class="form-label" for="withdraw_limit">New Withdraw Limit (INR)</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--danger); z-index: 1; pointer-events: none;">₹</span>
+                        <input type="number" id="withdraw_limit" name="withdraw_limit" class="form-input" style="padding-left: 38px; font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;" placeholder="20000" min="1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transfer Panel -->
+            <div class="limit-panel" id="panel-transfer" style="display: none;">
+                <div class="panel-icon transfer">⇄</div>
+                <p class="panel-title">Daily Transfer Limit</p>
+                <div class="form-group">
+                    <label class="form-label" for="transfer_limit">New Transfer Limit (INR)</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--gold); z-index: 1; pointer-events: none;">₹</span>
+                        <input type="number" id="transfer_limit" name="transfer_limit" class="form-input" style="padding-left: 38px; font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;" placeholder="10000" min="1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="shimmer-line"></div>
+            <button type="submit" class="btn-primary">Update Limit</button>
+        </form>
+
+        <div class="mt-4 text-center">
+            <a href="/dashboard" class="btn-ghost">← Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes iconFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+
+    .limit-tabs {
+        display: flex;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(201,168,76,0.1);
+        border-radius: 12px;
+        padding: 4px;
+        margin-bottom: 28px;
+        gap: 4px;
+    }
+
+    .limit-tab {
+        flex: 1;
+        padding: 10px;
+        background: transparent;
+        border: none;
+        border-radius: 9px;
+        color: var(--text-muted);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .limit-tab.active {
+        background: rgba(201,168,76,0.12);
+        border: 1px solid rgba(201,168,76,0.25);
+        color: var(--gold);
+    }
+
+    .limit-tab:hover:not(.active) {
+        color: var(--text-secondary);
+        background: rgba(255,255,255,0.03);
+    }
+
+    .limit-panel {
+        text-align: center;
+        animation: panelFade 0.3s ease;
+    }
+
+    @keyframes panelFade {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-icon {
+        width: 56px; height: 56px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        font-family: 'DM Mono', monospace;
+        font-weight: 700;
+        margin: 0 auto 12px;
+    }
+
+    .panel-icon.deposit { background: rgba(76,175,130,0.1); border: 1px solid rgba(76,175,130,0.2); color: var(--success); }
+    .panel-icon.withdraw { background: rgba(224,92,92,0.1); border: 1px solid rgba(224,92,92,0.2); color: var(--danger); }
+    .panel-icon.transfer { background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2); color: var(--gold); }
+
+    .panel-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+    }
+</style>
+
+<script>
+    function switchTab(type, el) {
+        document.querySelectorAll('.limit-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.querySelectorAll('.limit-panel').forEach(p => p.style.display = 'none');
+        document.getElementById('panel-' + type).style.display = 'block';
+        document.getElementById('limit_type_hidden').value = type;
+    }
+</script>
+{% endblock %}

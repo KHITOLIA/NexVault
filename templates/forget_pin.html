@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Forgot PIN{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="glass-card" style="width: 100%; max-width: 440px;">
+        <div class="card-corner-bl"></div>
+
+        <div class="text-center">
+            <div style="display: inline-flex; width: 70px; height: 70px; border-radius: 50%; background: rgba(224,92,92,0.1); border: 1px solid rgba(224,92,92,0.3); color: var(--danger); align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px; animation: iconShake 4s ease-in-out infinite;">
+                🔓
+            </div>
+            <p class="page-title">Reset PIN</p>
+            <p class="page-subtitle">Answer your security question to continue</p>
+        </div>
+
+        <div class="info-notice">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>A new PIN will be sent to your registered email address.</span>
+        </div>
+
+        <form method="POST" action="/forget_pin">
+            <div class="form-group">
+                <label class="form-label" for="account_no">Account Number</label>
+                <input type="text" id="account_no" name="account_no" class="form-input" placeholder="Enter your account number" required autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="security_answer">Security Answer</label>
+                <p style="font-size: 0.8rem; color: var(--gold-light); padding: 8px 12px; background: rgba(201,168,76,0.05); border-left: 2px solid var(--gold); border-radius: 4px; margin-bottom: 8px;">
+                    What is the name of your first pet?
+                </p>
+                <input type="text" id="security_answer" name="security_answer" class="form-input" placeholder="Your answer" required>
+            </div>
+
+            <div class="shimmer-line"></div>
+
+            <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, #e05c5c 0%, #b83a3a 100%);">
+                Reset PIN
+            </button>
+        </form>
+
+        <div class="mt-4 text-center">
+            <a href="/login" class="btn-ghost">← Back to Login</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes iconShake {
+        0%, 90%, 100% { transform: rotate(0deg); }
+        92% { transform: rotate(-10deg); }
+        94% { transform: rotate(10deg); }
+        96% { transform: rotate(-6deg); }
+        98% { transform: rotate(6deg); }
+    }
+
+    .info-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px;
+        background: rgba(201,168,76,0.05);
+        border: 1px solid rgba(201,168,76,0.15);
+        border-radius: 10px;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-bottom: 24px;
+        line-height: 1.5;
+    }
+
+    .info-notice svg { flex-shrink: 0; color: var(--gold); opacity: 0.7; margin-top: 1px; }
+</style>
+{% endblock %}

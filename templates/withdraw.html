@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Withdraw Funds{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="glass-card transaction-card">
+        <div class="card-corner-bl"></div>
+
+        <div class="txn-header">
+            <div class="txn-icon withdraw-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div>
+                <p class="page-title">Withdraw Funds</p>
+                <p class="page-subtitle">Debit from your account</p>
+            </div>
+        </div>
+
+        {% if msg %}
+        <div class="alert {% if 'exceed' in msg or 'Error' in msg or 'limit' in msg.lower() %}alert-error{% else %}alert-success{% endif %}">
+            <span>{% if 'exceed' in msg or 'limit' in msg.lower() %}⚠{% else %}✦{% endif %}</span> {{ msg }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/withdraw">
+            <div class="form-group">
+                <label class="form-label" for="amount">Withdrawal Amount (INR)</label>
+                <div class="amount-input-wrap">
+                    <span class="currency-prefix">₹</span>
+                    <input type="number" id="amount" name="amount" class="form-input amount-input"
+                           placeholder="0.00" min="1" step="0.01" required>
+                </div>
+            </div>
+
+            <div class="quick-amounts">
+                <span class="quick-label">Quick select:</span>
+                <div class="amount-chips">
+                    <button type="button" class="amount-chip" data-amount="500">₹500</button>
+                    <button type="button" class="amount-chip" data-amount="2000">₹2,000</button>
+                    <button type="button" class="amount-chip" data-amount="5000">₹5,000</button>
+                    <button type="button" class="amount-chip" data-amount="10000">₹10,000</button>
+                </div>
+            </div>
+
+            <div class="shimmer-line"></div>
+
+            <div class="txn-summary" id="summary" style="display: none;">
+                <div class="summary-row">
+                    <span>Withdrawal Amount</span>
+                    <span class="summary-val" id="summaryAmt">—</span>
+                </div>
+                <div class="summary-row">
+                    <span>Transaction Fee</span>
+                    <span class="summary-val success-text">₹0.00</span>
+                </div>
+                <div class="summary-row total-row">
+                    <span>Total Debit</span>
+                    <span class="summary-val danger-text" id="summaryTotal">—</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary btn-danger-style">
+                Confirm Withdrawal
+            </button>
+        </form>
+
+        <div class="mt-4 text-center">
+            <a href="/dashboard" class="btn-ghost">← Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .transaction-card { width: 100%; max-width: 480px; }
+
+    .txn-header { display: flex; align-items: center; gap: 20px; margin-bottom: 32px; }
+
+    .txn-icon {
+        width: 64px; height: 64px; border-radius: 20px;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    .withdraw-icon {
+        background: rgba(224,92,92,0.1);
+        border: 1px solid rgba(224,92,92,0.3);
+        color: var(--danger);
+        animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+
+    .amount-input-wrap { position: relative; }
+
+    .currency-prefix {
+        position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+        font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;
+        color: var(--danger); z-index: 1; pointer-events: none;
+    }
+
+    .amount-input {
+        padding-left: 42px !important;
+        font-family: 'Cormorant Garamond', serif !important;
+        font-size: 1.8rem !important; font-weight: 600;
+        color: var(--text-primary) !important;
+    }
+
+    .quick-amounts { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: -4px; }
+    .quick-label { font-size: 0.72rem; letter-spacing: 1px; color: var(--text-muted); white-space: nowrap; }
+    .amount-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .amount-chip {
+        padding: 6px 14px; background: transparent;
+        border: 1px solid rgba(224,92,92,0.2); border-radius: 20px;
+        color: var(--text-secondary); font-family: 'DM Sans', sans-serif;
+        font-size: 0.78rem; cursor: pointer; transition: all 0.2s ease;
+    }
+
+    .amount-chip:hover, .amount-chip.selected {
+        background: rgba(224,92,92,0.08);
+        border-color: var(--danger); color: var(--danger);
+    }
+
+    .txn-summary {
+        background: rgba(255,255,255,0.02); border: 1px solid rgba(224,92,92,0.1);
+        border-radius: 16px; padding: 20px; margin-bottom: 20px;
+    }
+
+    .summary-row {
+        display: flex; justify-content: space-between;
+        font-size: 0.85rem; color: var(--text-secondary); padding: 6px 0;
+    }
+
+    .total-row {
+        border-top: 1px solid rgba(224,92,92,0.15);
+        margin-top: 8px; padding-top: 14px;
+        font-weight: 600; color: var(--text-primary);
+    }
+
+    .summary-val { font-family: 'DM Mono', monospace; }
+    .success-text { color: var(--success); }
+    .danger-text { color: var(--danger); }
+
+    .btn-danger-style {
+        background: linear-gradient(135deg, #e05c5c 0%, #b83a3a 100%) !important;
+    }
+
+    .btn-danger-style:hover {
+        box-shadow: 0 8px 30px rgba(224,92,92,0.35) !important;
+    }
+</style>
+
+<script>
+    const amtInput = document.getElementById('amount');
+    const summary = document.getElementById('summary');
+    const summaryAmt = document.getElementById('summaryAmt');
+    const summaryTotal = document.getElementById('summaryTotal');
+
+    amtInput.addEventListener('input', () => {
+        const val = parseFloat(amtInput.value);
+        if (val > 0) {
+            summary.style.display = 'block';
+            const fmt = '₹' + val.toLocaleString('en-IN', { minimumFractionDigits: 2 });
+            summaryAmt.textContent = fmt;
+            summaryTotal.textContent = fmt;
+        } else {
+            summary.style.display = 'none';
+        }
+    });
+
+    document.querySelectorAll('.amount-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            amtInput.value = chip.dataset.amount;
+            amtInput.dispatchEvent(new Event('input'));
+        });
+    });
+</script>
+{% endblock %}

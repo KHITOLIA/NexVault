@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Change PIN{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="glass-card">
+        <div class="card-corner-bl"></div>
+
+        <div class="text-center">
+            <div class="page-icon" style="background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.3); color: var(--gold);">
+                🔑
+            </div>
+            <p class="page-title">Change PIN</p>
+            <p class="page-subtitle">Update your security PIN</p>
+        </div>
+
+        {% if msg %}
+        <div class="alert alert-success"><span>✦</span> {{ msg }}</div>
+        {% endif %}
+
+        <form method="POST" action="/change_pin">
+            <div class="form-group">
+                <label class="form-label" for="old_pin">Current PIN</label>
+                <input type="password" id="old_pin" name="old_pin" class="form-input" placeholder="Enter current PIN" required maxlength="6">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="new_pin">New PIN</label>
+                <input type="password" id="new_pin" name="new_pin" class="form-input" placeholder="Enter new PIN (4-6 digits)" required maxlength="6">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="confirm_pin">Confirm New PIN</label>
+                <input type="password" id="confirm_pin" name="confirm_pin" class="form-input" placeholder="Re-enter new PIN" maxlength="6">
+                <div class="match-indicator" id="matchIndicator" style="display: none;"></div>
+            </div>
+            <div class="shimmer-line"></div>
+            <button type="submit" class="btn-primary">Update PIN</button>
+        </form>
+
+        <div class="mt-4 text-center">
+            <a href="/dashboard" class="btn-ghost">← Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass-card { width: 100%; max-width: 440px; }
+
+    .page-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px; height: 70px;
+        border-radius: 50%;
+        border: 1px solid;
+        font-size: 1.8rem;
+        margin: 0 auto 20px;
+        animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-6px) rotate(5deg); }
+    }
+
+    .match-indicator {
+        margin-top: 8px;
+        font-size: 0.75rem;
+        padding: 6px 12px;
+        border-radius: 6px;
+    }
+</style>
+
+<script>
+    const newPin = document.getElementById('new_pin');
+    const confirmPin = document.getElementById('confirm_pin');
+    const indicator = document.getElementById('matchIndicator');
+
+    confirmPin.addEventListener('input', () => {
+        if (confirmPin.value.length === 0) { indicator.style.display = 'none'; return; }
+        indicator.style.display = 'block';
+        if (newPin.value === confirmPin.value) {
+            indicator.style.background = 'rgba(76,175,130,0.1)';
+            indicator.style.color = 'var(--success)';
+            indicator.style.border = '1px solid rgba(76,175,130,0.2)';
+            indicator.textContent = '✓ PINs match';
+        } else {
+            indicator.style.background = 'rgba(224,92,92,0.08)';
+            indicator.style.color = 'var(--danger)';
+            indicator.style.border = '1px solid rgba(224,92,92,0.2)';
+            indicator.textContent = '✗ PINs do not match';
+        }
+    });
+</script>
+{% endblock %}

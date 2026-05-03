@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Statement Results{% endblock %}
+
+{% block content %}
+<div class="statement-wrapper">
+
+    <div class="statement-header">
+        <div>
+            <h1 class="page-title" style="margin-bottom: 4px;">Transaction History</h1>
+            <p class="page-subtitle" style="margin: 0;">Complete record of your account activity</p>
+        </div>
+        <a href="/bank_statement" class="btn-ghost">New Search</a>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+        <div class="summary-card deposit-card">
+            <span class="summary-icon">↓</span>
+            <div>
+                <p class="summary-label">Total Deposited</p>
+                <p class="summary-amount green">₹{{ "{:,.2f}".format(total_deposit) }}</p>
+            </div>
+        </div>
+        <div class="summary-card withdraw-card">
+            <span class="summary-icon">↑</span>
+            <div>
+                <p class="summary-label">Total Withdrawn</p>
+                <p class="summary-amount red">₹{{ "{:,.2f}".format(total_withdraw) }}</p>
+            </div>
+        </div>
+        <div class="summary-card sent-card">
+            <span class="summary-icon">→</span>
+            <div>
+                <p class="summary-label">Total Sent</p>
+                <p class="summary-amount gold">₹{{ "{:,.2f}".format(total_sent) }}</p>
+            </div>
+        </div>
+        <div class="summary-card received-card">
+            <span class="summary-icon">←</span>
+            <div>
+                <p class="summary-label">Total Received</p>
+                <p class="summary-amount blue">₹{{ "{:,.2f}".format(total_received) }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transactions Table -->
+    {% if transactions %}
+    <div class="table-section">
+        <div class="table-header">
+            <h2 class="table-title">Deposits & Withdrawals</h2>
+            <span class="entry-count">{{ transactions|length }} entries</span>
+        </div>
+        <div class="table-wrap">
+            <table class="txn-table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr class="txn-row">
+                        <td class="date-cell">
+                            <span class="date-main">{{ t.timestamp.strftime('%d %b %Y') }}</span>
+                            <span class="date-time">{{ t.timestamp.strftime('%I:%M %p') }}</span>
+                        </td>
+                        <td>
+                            <span class="type-badge {{ 'badge-deposit' if t.type == 'deposit' else 'badge-withdraw' }}">
+                                {{ t.type.upper() }}
+                            </span>
+                        </td>
+                        <td class="amount-cell {{ 'amount-green' if t.type == 'deposit' else 'amount-red' }}">
+                            {{ '+' if t.type == 'deposit' else '-' }}₹{{ "{:,.2f}".format(t.amount) }}
+                        </td>
+                        <td>
+                            <span class="status-completed">
+                                <span class="status-dot"></span> Completed
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Transfers Table -->
+    {% if transfers %}
+    <div class="table-section" style="margin-top: 32px;">
+        <div class="table-header">
+            <h2 class="table-title">Fund Transfers</h2>
+            <span class="entry-count">{{ transfers|length }} entries</span>
+        </div>
+        <div class="table-wrap">
+            <table class="txn-table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Type</th>
+                        <th>Account</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tr in transfers %}
+                    {% set is_sender = tr.send_account_no == session.get('account') %}
+                    <tr class="txn-row">
+                        <td class="date-cell">
+                            <span class="date-main">{{ tr.timestamp.strftime('%d %b %Y') }}</span>
+                            <span class="date-time">{{ tr.timestamp.strftime('%I:%M %p') }}</span>
+                        </td>
+                        <td>
+                            <span class="type-badge {{ 'badge-withdraw' if is_sender else 'badge-deposit' }}">
+                                {{ 'SENT' if is_sender else 'RECEIVED' }}
+                            </span>
+                        </td>
+                        <td class="date-cell">
+                            <span class="date-main">{{ '••' + (tr.receive_account_no if is_sender else tr.send_account_no)[-4:] }}</span>
+                            <span class="date-time">{{ 'To' if is_sender else 'From' }}</span>
+                        </td>
+                        <td class="amount-cell {{ 'amount-red' if is_sender else 'amount-green' }}">
+                            {{ '-' if is_sender else '+' }}₹{{ "{:,.2f}".format(tr.amount) }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if not transactions and not transfers %}
+    <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h3>No Transactions Found</h3>
+        <p>No activity was recorded in the selected date range.</p>
+        <a href="/bank_statement" class="btn-ghost" style="margin-top: 20px; display: inline-block;">Try Different Range</a>
+    </div>
+    {% endif %}
+
+    <div class="mt-6 text-center" style="padding-bottom: 60px;">
+        <a href="/dashboard" class="btn-ghost">← Back to Dashboard</a>
+    </div>
+</div>
+
+<style>
+    .statement-wrapper {
+        max-width: 900px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 110px 40px 60px;
+    }
+
+    .statement-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 36px;
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 36px;
+    }
+
+    .summary-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px;
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        backdrop-filter: blur(12px);
+        animation: cardEntry 0.5s ease both;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-deep);
+    }
+
+    .summary-card:nth-child(1) { animation-delay: 0.1s; }
+    .summary-card:nth-child(2) { animation-delay: 0.2s; }
+    .summary-card:nth-child(3) { animation-delay: 0.3s; }
+    .summary-card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes cardEntry { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+    .summary-icon {
+        font-size: 1.4rem;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'DM Mono', monospace;
+        font-weight: 700;
+    }
+
+    .deposit-card .summary-icon { background: rgba(76,175,130,0.1); border: 1px solid rgba(76,175,130,0.2); color: var(--success); }
+    .withdraw-card .summary-icon { background: rgba(224,92,92,0.1); border: 1px solid rgba(224,92,92,0.2); color: var(--danger); }
+    .sent-card .summary-icon { background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2); color: var(--gold); }
+    .received-card .summary-icon { background: rgba(100,149,237,0.1); border: 1px solid rgba(100,149,237,0.2); color: #6495ed; }
+
+    .summary-label {
+        font-size: 0.68rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+    }
+
+    .summary-amount {
+        font-family: 'DM Mono', monospace;
+        font-size: 1.05rem;
+        font-weight: 500;
+    }
+
+    .summary-amount.green { color: var(--success); }
+    .summary-amount.red { color: var(--danger); }
+    .summary-amount.gold { color: var(--gold); }
+    .summary-amount.blue { color: #6495ed; }
+
+    .table-section {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+    }
+
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(201,168,76,0.1);
+    }
+
+    .table-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    .entry-count {
+        font-size: 0.72rem;
+        letter-spacing: 1px;
+        color: var(--text-muted);
+        padding: 4px 12px;
+        background: rgba(201,168,76,0.08);
+        border-radius: 20px;
+        border: 1px solid rgba(201,168,76,0.15);
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    .txn-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .txn-table thead th {
+        padding: 12px 24px;
+        font-size: 0.65rem;
+        font-weight: 500;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        text-align: left;
+        background: rgba(0,0,0,0.1);
+    }
+
+    .txn-row {
+        border-bottom: 1px solid rgba(201,168,76,0.05);
+        transition: background 0.2s ease;
+    }
+
+    .txn-row:last-child { border-bottom: none; }
+
+    .txn-row:hover { background: rgba(201,168,76,0.03); }
+
+    .txn-table td {
+        padding: 14px 24px;
+        vertical-align: middle;
+    }
+
+    .date-cell { display: flex; flex-direction: column; gap: 2px; }
+    .date-main { font-size: 0.85rem; color: var(--text-primary); }
+    .date-time { font-size: 0.72rem; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+
+    .type-badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+    }
+
+    .badge-deposit { background: rgba(76,175,130,0.1); border: 1px solid rgba(76,175,130,0.2); color: var(--success); }
+    .badge-withdraw { background: rgba(224,92,92,0.08); border: 1px solid rgba(224,92,92,0.2); color: var(--danger); }
+
+    .amount-cell {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .amount-green { color: var(--success); }
+    .amount-red { color: var(--danger); }
+
+    .status-completed {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.72rem;
+        color: var(--success);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 40px;
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+    }
+
+    .empty-icon { font-size: 3rem; margin-bottom: 16px; }
+
+    .empty-state h3 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.6rem;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+</style>
+{% endblock %}

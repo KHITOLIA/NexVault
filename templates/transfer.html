@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Transfer Funds{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="glass-card transaction-card">
+        <div class="card-corner-bl"></div>
+
+        <div class="txn-header">
+            <div class="txn-icon transfer-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 16l-4-4 4-4M17 8l4 4-4 4M14 4l-4 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div>
+                <p class="page-title">Fund Transfer</p>
+                <p class="page-subtitle">Send money instantly</p>
+            </div>
+        </div>
+
+        {% if msg %}
+        <div class="alert {% if 'Successfull' in msg %}alert-success{% else %}alert-error{% endif %}">
+            <span>{% if 'Successfull' in msg %}✦{% else %}⚠{% endif %}</span> {{ msg }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/transfer">
+            <!-- Transfer Flow Visualization -->
+            <div class="transfer-flow">
+                <div class="flow-node from-node">
+                    <div class="flow-node-icon">YOU</div>
+                    <span>Sender</span>
+                </div>
+                <div class="flow-arrow">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-pulse"></div>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="arrow-head">
+                        <path d="M4 10h12M12 5l5 5-5 5" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="flow-node to-node" id="toNode">
+                    <div class="flow-node-icon" id="receiverInitial">?</div>
+                    <span>Receiver</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="receiver">Receiver Account Number</label>
+                <input type="text" id="receiver" name="receiver" class="form-input"
+                       placeholder="Enter account number" required autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="amount">Transfer Amount (INR)</label>
+                <div class="amount-input-wrap">
+                    <span class="currency-prefix">₹</span>
+                    <input type="number" id="amount" name="amount" class="form-input amount-input"
+                           placeholder="0.00" min="1" step="0.01" required>
+                </div>
+            </div>
+
+            <div class="quick-amounts">
+                <span class="quick-label">Quick:</span>
+                <div class="amount-chips">
+                    <button type="button" class="amount-chip" data-amount="500">₹500</button>
+                    <button type="button" class="amount-chip" data-amount="1000">₹1K</button>
+                    <button type="button" class="amount-chip" data-amount="5000">₹5K</button>
+                    <button type="button" class="amount-chip" data-amount="10000">₹10K</button>
+                </div>
+            </div>
+
+            <div class="shimmer-line"></div>
+
+            <div class="transfer-note">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span>Please verify the receiver account number before proceeding. Transfers cannot be reversed.</span>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Send Transfer
+            </button>
+        </form>
+
+        <div class="mt-4 text-center">
+            <a href="/dashboard" class="btn-ghost">← Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .transaction-card { width: 100%; max-width: 480px; }
+
+    .txn-header { display: flex; align-items: center; gap: 20px; margin-bottom: 32px; }
+
+    .txn-icon {
+        width: 64px; height: 64px; border-radius: 20px;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    .transfer-icon {
+        background: rgba(201,168,76,0.1);
+        border: 1px solid rgba(201,168,76,0.3);
+        color: var(--gold);
+        animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+
+    /* Transfer flow */
+    .transfer-flow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        margin-bottom: 28px;
+        padding: 20px;
+        background: rgba(201,168,76,0.03);
+        border: 1px solid rgba(201,168,76,0.1);
+        border-radius: 16px;
+    }
+
+    .flow-node {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .flow-node-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: rgba(201,168,76,0.1);
+        border: 1px solid rgba(201,168,76,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'DM Mono', monospace;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: var(--gold);
+        transition: all 0.3s ease;
+    }
+
+    .flow-node span {
+        font-size: 0.65rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
+
+    .flow-arrow {
+        flex: 1;
+        position: relative;
+        height: 2px;
+        margin: 0 16px;
+        margin-bottom: 20px;
+    }
+
+    .arrow-line {
+        position: absolute;
+        top: 0; left: 0; right: 20px;
+        height: 2px;
+        background: rgba(201,168,76,0.2);
+    }
+
+    .arrow-pulse {
+        position: absolute;
+        top: -2px; left: 0;
+        width: 30%;
+        height: 6px;
+        border-radius: 3px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        animation: flowPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes flowPulse {
+        0% { left: -30%; opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { left: 100%; opacity: 0; }
+    }
+
+    .arrow-head {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .amount-input-wrap { position: relative; }
+
+    .currency-prefix {
+        position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+        font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;
+        color: var(--gold); z-index: 1; pointer-events: none;
+    }
+
+    .amount-input {
+        padding-left: 42px !important;
+        font-family: 'Cormorant Garamond', serif !important;
+        font-size: 1.8rem !important; font-weight: 600;
+        color: var(--text-primary) !important;
+    }
+
+    .quick-amounts { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: -4px; }
+    .quick-label { font-size: 0.72rem; letter-spacing: 1px; color: var(--text-muted); white-space: nowrap; }
+    .amount-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .amount-chip {
+        padding: 6px 14px; background: transparent;
+        border: 1px solid rgba(201,168,76,0.2); border-radius: 20px;
+        color: var(--text-secondary); font-family: 'DM Sans', sans-serif;
+        font-size: 0.78rem; cursor: pointer; transition: all 0.2s ease;
+    }
+
+    .amount-chip:hover, .amount-chip.selected {
+        background: rgba(201,168,76,0.1);
+        border-color: var(--gold); color: var(--gold);
+    }
+
+    .transfer-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px;
+        background: rgba(201,168,76,0.04);
+        border-radius: 10px;
+        font-size: 0.78rem;
+        line-height: 1.5;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+    }
+
+    .transfer-note svg { flex-shrink: 0; color: var(--gold); margin-top: 1px; opacity: 0.7; }
+</style>
+
+<script>
+    const receiverInput = document.getElementById('receiver');
+    const receiverInitial = document.getElementById('receiverInitial');
+
+    receiverInput.addEventListener('input', () => {
+        const val = receiverInput.value.trim();
+        receiverInitial.textContent = val ? val.slice(-2).toUpperCase() : '?';
+    });
+
+    document.querySelectorAll('.amount-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('selected'));
+            chip.classList.add('selected');
+            document.getElementById('amount').value = chip.dataset.amount;
+        });
+    });
+</script>
+{% endblock %}

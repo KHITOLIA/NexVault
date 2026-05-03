@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Bank Statement{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="glass-card statement-form-card">
+        <div class="card-corner-bl"></div>
+
+        <div class="txn-header">
+            <div class="txn-icon statement-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8 7h8M8 11h8M8 15h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div>
+                <p class="page-title">Bank Statement</p>
+                <p class="page-subtitle">Select date range to view</p>
+            </div>
+        </div>
+
+        <form method="POST" action="/bank_statement">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="start_date">From Date</label>
+                    <input type="date" id="start_date" name="start_date" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="end_date">To Date</label>
+                    <input type="date" id="end_date" name="end_date" class="form-input" required>
+                </div>
+            </div>
+
+            <div class="preset-row">
+                <span class="quick-label">Quick Range:</span>
+                <div class="preset-chips">
+                    <button type="button" class="preset-chip" data-days="7">Last 7 Days</button>
+                    <button type="button" class="preset-chip" data-days="30">Last 30 Days</button>
+                    <button type="button" class="preset-chip" data-days="90">Last 3 Months</button>
+                </div>
+            </div>
+
+            <div class="shimmer-line"></div>
+
+            <button type="submit" class="btn-primary">Generate Statement</button>
+        </form>
+
+        <div class="mt-4 text-center">
+            <a href="/dashboard" class="btn-ghost">← Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .statement-form-card { width: 100%; max-width: 520px; }
+    .txn-header { display: flex; align-items: center; gap: 20px; margin-bottom: 32px; }
+
+    .txn-icon {
+        width: 64px; height: 64px; border-radius: 20px;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    .statement-icon {
+        background: rgba(201,168,76,0.1);
+        border: 1px solid rgba(201,168,76,0.3);
+        color: var(--gold);
+        animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .preset-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: -4px; }
+    .quick-label { font-size: 0.72rem; letter-spacing: 1px; color: var(--text-muted); white-space: nowrap; }
+
+    .preset-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .preset-chip {
+        padding: 6px 14px; background: transparent;
+        border: 1px solid rgba(201,168,76,0.2); border-radius: 20px;
+        color: var(--text-secondary); font-family: 'DM Sans', sans-serif;
+        font-size: 0.75rem; cursor: pointer; transition: all 0.2s ease;
+    }
+
+    .preset-chip:hover, .preset-chip.active {
+        background: rgba(201,168,76,0.1);
+        border-color: var(--gold); color: var(--gold);
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(0.5) sepia(1) saturate(2) hue-rotate(5deg);
+        cursor: pointer;
+        opacity: 0.6;
+    }
+</style>
+
+<script>
+    const today = new Date();
+
+    document.querySelectorAll('.preset-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            const days = parseInt(chip.dataset.days);
+            const start = new Date(today);
+            start.setDate(today.getDate() - days);
+            document.getElementById('start_date').value = start.toISOString().split('T')[0];
+            document.getElementById('end_date').value = today.toISOString().split('T')[0];
+        });
+    });
+</script>
+{% endblock %}

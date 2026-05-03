@@ -1,0 +1,441 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Private Digital Banking{% endblock %}
+
+{% block content %}
+<div class="home-hero">
+    <div class="hero-bg-grid"></div>
+    
+    <div class="hero-content">
+        <div class="hero-eyebrow">
+            <span class="eyebrow-dot"></span>
+            <span>SECURE · PRIVATE · TRUSTED</span>
+        </div>
+
+        <h1 class="hero-title">
+            Banking Refined
+            <span class="hero-title-accent">for the Modern Era</span>
+        </h1>
+
+        <p class="hero-desc">
+            NexVault offers a seamless, encrypted banking experience built on trust, 
+            precision, and absolute privacy. Your wealth, protected.
+        </p>
+
+        {% if msg %}
+        <div class="alert alert-success" style="max-width: 480px; margin: 0 auto 32px;">
+            <span>✦</span> {{ msg }}
+        </div>
+        {% endif %}
+
+        <div class="hero-actions">
+            <a href="/login" class="hero-btn-primary">
+                <span>Access Account</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+            <a href="/register" class="hero-btn-ghost">Open Account</a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">256</span>
+                <span class="stat-label">BIT ENCRYPTION</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">AVAILABILITY</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number">0</span>
+                <span class="stat-label">BREACHES</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating card decoration -->
+    <div class="floating-card-deco">
+        <div class="deco-card deco-card-back"></div>
+        <div class="deco-card deco-card-mid"></div>
+        <div class="deco-card deco-card-front">
+            <div class="deco-card-chip"></div>
+            <div class="deco-card-band"></div>
+            <div class="deco-card-logo">◈ NX</div>
+            <div class="deco-card-number">•••• •••• •••• 7429</div>
+            <div class="deco-card-info">
+                <span>NEXVAULT PRIVATE</span>
+                <span>VALID THRU 12/28</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features section -->
+<div class="features-row">
+    <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant Transfers</h3>
+        <p>Move funds in real-time with zero latency between accounts</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Vault Security</h3>
+        <p>Military-grade encryption with biometric PIN protection</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Smart Statements</h3>
+        <p>Detailed transaction history with custom date filtering</p>
+    </div>
+</div>
+
+<style>
+    .home-hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 100px 80px 80px;
+        position: relative;
+        gap: 60px;
+    }
+
+    .hero-bg-grid {
+        position: absolute;
+        inset: 0;
+        background-image: 
+            linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(ellipse 60% 80% at 30% 50%, black 0%, transparent 70%);
+    }
+
+    .hero-content {
+        max-width: 600px;
+        animation: heroEntry 0.8s cubic-bezier(0.34,1.2,0.64,1) forwards;
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    @keyframes heroEntry {
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    .hero-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 24px;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 3px;
+        color: var(--gold);
+    }
+
+    .eyebrow-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--gold);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .hero-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(3rem, 5vw, 4.5rem);
+        font-weight: 300;
+        line-height: 1.1;
+        margin-bottom: 24px;
+        color: var(--text-primary);
+    }
+
+    .hero-title-accent {
+        display: block;
+        color: var(--gold);
+        font-weight: 600;
+        font-style: italic;
+    }
+
+    .hero-desc {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+        max-width: 440px;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 60px;
+        flex-wrap: wrap;
+    }
+
+    .hero-btn-primary {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 32px;
+        background: linear-gradient(135deg, var(--gold) 0%, #a8832a 100%);
+        border-radius: 12px;
+        color: var(--obsidian);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-btn-primary::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .hero-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(201,168,76,0.4); }
+    .hero-btn-primary:hover::before { opacity: 1; }
+
+    .hero-btn-ghost {
+        display: flex;
+        align-items: center;
+        padding: 16px 32px;
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: var(--text-secondary);
+        font-size: 0.82rem;
+        font-weight: 500;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .hero-btn-ghost:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+        background: rgba(201,168,76,0.06);
+        transform: translateY(-3px);
+    }
+
+    .hero-stats {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+    }
+
+    .stat-item { text-align: left; }
+
+    .stat-number {
+        display: block;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--gold);
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        color: var(--text-muted);
+        margin-top: 4px;
+        display: block;
+    }
+
+    .stat-divider {
+        width: 1px;
+        height: 40px;
+        background: rgba(201,168,76,0.2);
+    }
+
+    /* Floating card decoration */
+    .floating-card-deco {
+        position: relative;
+        width: 340px;
+        height: 220px;
+        flex-shrink: 0;
+        animation: cardDeco 0.9s 0.2s cubic-bezier(0.34,1.2,0.64,1) forwards;
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    @keyframes cardDeco {
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    .deco-card {
+        position: absolute;
+        width: 320px;
+        height: 200px;
+        border-radius: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .deco-card-back {
+        background: linear-gradient(135deg, #1a1228 0%, #0d1f3c 100%);
+        border: 1px solid rgba(201,168,76,0.1);
+        top: 30px;
+        left: 30px;
+        transform: rotate(-8deg);
+        animation: cardFloat3 7s ease-in-out infinite;
+    }
+
+    .deco-card-mid {
+        background: linear-gradient(135deg, #0f1e38 0%, #1a2840 100%);
+        border: 1px solid rgba(201,168,76,0.15);
+        top: 15px;
+        left: 15px;
+        transform: rotate(-4deg);
+        animation: cardFloat2 6s ease-in-out infinite;
+    }
+
+    .deco-card-front {
+        background: linear-gradient(135deg, #1c2d4a 0%, #0e1d33 100%);
+        border: 1px solid rgba(201,168,76,0.3);
+        top: 0;
+        left: 0;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(201,168,76,0.1);
+        padding: 24px 28px;
+        animation: cardFloat1 5s ease-in-out infinite;
+    }
+
+    @keyframes cardFloat1 {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-12px) rotate(1deg); }
+    }
+    @keyframes cardFloat2 {
+        0%, 100% { transform: translateY(0px) rotate(-4deg); }
+        50% { transform: translateY(-8px) rotate(-3deg); }
+    }
+    @keyframes cardFloat3 {
+        0%, 100% { transform: translateY(0px) rotate(-8deg); }
+        50% { transform: translateY(-5px) rotate(-7deg); }
+    }
+
+    .deco-card-chip {
+        width: 38px;
+        height: 28px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, var(--gold) 0%, #a8832a 100%);
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .deco-card-chip::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: rgba(0,0,0,0.3);
+        transform: translateY(-50%);
+    }
+
+    .deco-card-band {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(201,168,76,0.03) 0%, rgba(201,168,76,0.08) 100%);
+        border-radius: 20px;
+    }
+
+    .deco-card-logo {
+        position: absolute;
+        top: 24px;
+        right: 28px;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--gold);
+        letter-spacing: 2px;
+    }
+
+    .deco-card-number {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.88rem;
+        color: var(--text-secondary);
+        letter-spacing: 3px;
+        margin-bottom: 20px;
+    }
+
+    .deco-card-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.65rem;
+        font-weight: 500;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
+
+    /* Features */
+    .features-row {
+        display: flex;
+        gap: 20px;
+        padding: 0 80px 120px;
+        justify-content: center;
+    }
+
+    .feature-card {
+        flex: 1;
+        max-width: 300px;
+        padding: 32px;
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        backdrop-filter: blur(12px);
+        transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+        animation: featureEntry 0.6s ease forwards;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .feature-card:nth-child(1) { animation-delay: 0.3s; }
+    .feature-card:nth-child(2) { animation-delay: 0.5s; }
+    .feature-card:nth-child(3) { animation-delay: 0.7s; }
+
+    @keyframes featureEntry {
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--gold);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3), var(--shadow-gold);
+    }
+
+    .feature-icon {
+        font-size: 1.8rem;
+        margin-bottom: 16px;
+        display: block;
+        filter: grayscale(0.3);
+    }
+
+    .feature-card h3 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--gold);
+        margin-bottom: 10px;
+    }
+
+    .feature-card p {
+        font-size: 0.85rem;
+        line-height: 1.6;
+        color: var(--text-secondary);
+    }
+</style>
+{% endblock %}

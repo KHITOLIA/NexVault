@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Open Account{% endblock %}
+
+{% block content %}
+<div class="page-wrapper" style="justify-content: flex-start; padding-top: 110px;">
+    <div class="glass-card register-card">
+        <div class="card-corner-bl"></div>
+
+        <div class="reg-header">
+            <div class="reg-icon">✦</div>
+            <p class="page-title">Open Account</p>
+            <p class="page-subtitle">Join NexVault Private Banking</p>
+        </div>
+
+        <form method="POST" action="/register">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="name">Full Name</label>
+                    <input type="text" id="name" name="name" class="form-input"
+                           placeholder="Your full name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input"
+                           placeholder="your@email.com" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="pin">Create PIN</label>
+                    <input type="password" id="pin" name="pin" class="form-input"
+                           placeholder="4–6 digit PIN" required maxlength="6">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="balance">Initial Deposit (INR)</label>
+                    <input type="number" id="balance" name="balance" class="form-input"
+                           placeholder="0.00" min="0" step="0.01" required>
+                </div>
+            </div>
+
+            <div class="shimmer-line"></div>
+
+            <div class="form-group">
+                <label class="form-label" for="security_answer">Security Question</label>
+                <p class="security-question-text">What is the name of your first pet?</p>
+                <input type="text" id="security_answer" name="security_answer" class="form-input"
+                       placeholder="Your answer (used for PIN recovery)" required>
+            </div>
+
+            <div class="terms-row">
+                <label class="custom-check">
+                    <input type="checkbox" required>
+                    <span class="checkmark"></span>
+                    <span>I agree to NexVault's Terms of Service and Privacy Policy</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Create Account
+            </button>
+        </form>
+
+        <div class="divider">ALREADY A MEMBER</div>
+
+        <div class="text-center">
+            <a href="/login" class="btn-ghost" style="width: 100%; display: block; text-align: center;">
+                Sign In
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .register-card {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .reg-header { text-align: center; margin-bottom: 8px; }
+
+    .reg-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(201,168,76,0.08);
+        border: 1px solid rgba(201,168,76,0.2);
+        font-size: 1.4rem;
+        color: var(--gold);
+        margin-bottom: 16px;
+        animation: regIconSpin 10s linear infinite;
+    }
+
+    @keyframes regIconSpin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .security-question-text {
+        font-size: 0.82rem;
+        color: var(--gold-light);
+        margin-bottom: 8px;
+        padding: 8px 12px;
+        background: rgba(201,168,76,0.05);
+        border-radius: 8px;
+        border-left: 2px solid var(--gold);
+    }
+
+    .terms-row {
+        margin: 16px 0 20px;
+    }
+
+    .custom-check {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+
+    .custom-check input { display: none; }
+
+    .checkmark {
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 1px solid rgba(201,168,76,0.3);
+        background: transparent;
+        transition: all 0.3s ease;
+        position: relative;
+        margin-top: 1px;
+    }
+
+    .custom-check input:checked ~ .checkmark {
+        background: var(--gold);
+        border-color: var(--gold);
+    }
+
+    .custom-check input:checked ~ .checkmark::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.65rem;
+        color: var(--obsidian);
+        font-weight: 700;
+    }
+</style>
+{% endblock %}

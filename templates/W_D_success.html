@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Transaction Complete{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="glass-card success-card">
+        <div class="card-corner-bl"></div>
+
+        <div class="success-animation">
+            <div class="success-ring ring-3"></div>
+            <div class="success-ring ring-2"></div>
+            <div class="success-ring ring-1"></div>
+            <div class="success-check">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+
+        <h1 class="success-title">Transaction Complete</h1>
+        <p class="success-sub">Your request has been processed successfully</p>
+
+        <div class="success-msg-box">
+            <p class="success-msg-text">{{ msg }}</p>
+        </div>
+
+        <div class="success-actions">
+            <a href="/dashboard" class="btn-primary" style="text-align: center; text-decoration: none;">Return to Dashboard</a>
+            <a href="/bank_statement" class="btn-ghost" style="text-align: center;">View Statement</a>
+        </div>
+
+        <div class="success-footer">
+            <div class="status-dot"></div>
+            <span>Transaction secured and recorded</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    .success-card {
+        width: 100%;
+        max-width: 440px;
+        text-align: center;
+    }
+
+    .success-animation {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 32px;
+    }
+
+    .success-ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 1px solid rgba(76,175,130,0.3);
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        animation: ringExpand 2s ease-out infinite;
+    }
+
+    .ring-1 { width: 60px; height: 60px; animation-delay: 0s; }
+    .ring-2 { width: 80px; height: 80px; animation-delay: 0.3s; }
+    .ring-3 { width: 100px; height: 100px; animation-delay: 0.6s; }
+
+    @keyframes ringExpand {
+        0% { opacity: 1; transform: translate(-50%, -50%) scale(0.8); }
+        100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+    }
+
+    .success-check {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(76,175,130,0.15);
+        border: 1px solid rgba(76,175,130,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--success);
+        animation: checkPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+
+    @keyframes checkPop {
+        from { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    .success-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+    }
+
+    .success-sub {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+        margin-bottom: 32px;
+    }
+
+    .success-msg-box {
+        background: rgba(76,175,130,0.05);
+        border: 1px solid rgba(76,175,130,0.2);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 28px;
+    }
+
+    .success-msg-text {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.82rem;
+        line-height: 1.7;
+        color: var(--text-secondary);
+        text-align: left;
+    }
+
+    .success-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .success-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 24px;
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,512 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+
+    <!-- Welcome Header -->
+    <div class="dash-header">
+        <div>
+            <p class="dash-greeting">Good day,</p>
+            <h1 class="dash-name">{{ user.name if user else 'Account Holder' }}</h1>
+        </div>
+        <div class="dash-acc-badge">
+            <span class="acc-label">ACCOUNT</span>
+            <span class="acc-number">{{ '••' + user.account_no[-4:] if user else '••0000' }}</span>
+        </div>
+    </div>
+
+    <!-- Balance Card -->
+    <div class="balance-hero">
+        <div class="balance-card">
+            <div class="balance-card-bg"></div>
+            <div class="balance-content">
+                <div class="balance-top">
+                    <div>
+                        <p class="balance-label">AVAILABLE BALANCE</p>
+                        <div class="balance-amount">
+                            <span class="balance-currency">₹</span>
+                            <span class="balance-num" id="balanceNum">{{ "{:,.2f}".format(user.balance) if user else "0.00" }}</span>
+                        </div>
+                    </div>
+                    <div class="balance-logo">◈ NX</div>
+                </div>
+                <div class="balance-bottom">
+                    <div class="balance-chip"></div>
+                    <div>
+                        <p class="balance-acc-full">{{ user.account_no if user else '---' }}</p>
+                        <p class="balance-type">NEXVAULT PRIVATE</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-header">
+        <h2 class="section-title">Quick Actions</h2>
+        <div class="shimmer-line" style="flex: 1; margin: 0 24px 0 16px;"></div>
+    </div>
+
+    <div class="actions-grid">
+        <a href="/deposit" class="action-card action-deposit">
+            <div class="action-icon-wrap">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <span class="action-label">Deposit</span>
+            <span class="action-desc">Add funds</span>
+        </a>
+
+        <a href="/withdraw" class="action-card action-withdraw">
+            <div class="action-icon-wrap">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <span class="action-label">Withdraw</span>
+            <span class="action-desc">Get cash</span>
+        </a>
+
+        <a href="/transfer" class="action-card action-transfer">
+            <div class="action-icon-wrap">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 16l-4-4 4-4M17 8l4 4-4 4M14 4l-4 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <span class="action-label">Transfer</span>
+            <span class="action-desc">Send money</span>
+        </a>
+
+        <a href="/check_balance" class="action-card action-balance">
+            <div class="action-icon-wrap">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <span class="action-label">Balance</span>
+            <span class="action-desc">Check funds</span>
+        </a>
+
+        <a href="/bank_statement" class="action-card action-statement">
+            <div class="action-icon-wrap">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8 7h8M8 11h8M8 15h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <span class="action-label">Statement</span>
+            <span class="action-desc">View history</span>
+        </a>
+
+        <a href="/change_pin" class="action-card action-security">
+            <div class="action-icon-wrap">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <rect x="5" y="11" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M12 16v2M8 11V7a4 4 0 018 0v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <span class="action-label">Change PIN</span>
+            <span class="action-desc">Update security</span>
+        </a>
+
+        <a href="/show_details" class="action-card action-profile">
+            <div class="action-icon-wrap">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <span class="action-label">My Profile</span>
+            <span class="action-desc">Account info</span>
+        </a>
+
+        <a href="/change_limit" class="action-card action-limits">
+            <div class="action-icon-wrap">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 4v16M4 8h4M4 12h8M4 16h4M16 8h4M20 12h-4M16 16h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <span class="action-label">Limits</span>
+            <span class="action-desc">Manage caps</span>
+        </a>
+    </div>
+
+    <!-- Limits Overview -->
+    <div class="section-header" style="margin-top: 40px;">
+        <h2 class="section-title">Daily Limits</h2>
+        <div class="shimmer-line" style="flex: 1; margin: 0 24px 0 16px;"></div>
+    </div>
+
+    <div class="limits-row">
+        <div class="limit-item">
+            <div class="limit-header">
+                <span class="limit-name">Deposit Limit</span>
+                <span class="limit-value">₹{{ "{:,.0f}".format(user.deposit_limit) if user else "20,000" }}</span>
+            </div>
+            <div class="limit-bar">
+                <div class="limit-fill" style="width: 40%; background: linear-gradient(90deg, #4caf82, #6fcfa0);"></div>
+            </div>
+        </div>
+        <div class="limit-item">
+            <div class="limit-header">
+                <span class="limit-name">Withdraw Limit</span>
+                <span class="limit-value">₹{{ "{:,.0f}".format(user.withdraw_limit) if user else "20,000" }}</span>
+            </div>
+            <div class="limit-bar">
+                <div class="limit-fill" style="width: 65%; background: linear-gradient(90deg, var(--gold), var(--gold-light));"></div>
+            </div>
+        </div>
+        <div class="limit-item">
+            <div class="limit-header">
+                <span class="limit-name">Transfer Limit</span>
+                <span class="limit-value">₹{{ "{:,.0f}".format(user.transfer_limit) if user else "10,000" }}</span>
+            </div>
+            <div class="limit-bar">
+                <div class="limit-fill" style="width: 25%; background: linear-gradient(90deg, #e05c5c, #f08080);"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .dashboard-wrapper {
+        max-width: 1000px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 110px 40px 120px;
+    }
+
+    /* Header */
+    .dash-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 40px;
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .dash-greeting {
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+    }
+
+    .dash-name {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2.4rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .dash-acc-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+        padding: 12px 20px;
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+    }
+
+    .acc-label {
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        color: var(--text-muted);
+    }
+
+    .acc-number {
+        font-family: 'DM Mono', monospace;
+        font-size: 1rem;
+        color: var(--gold);
+        letter-spacing: 2px;
+    }
+
+    /* Balance Card */
+    .balance-hero { margin-bottom: 48px; }
+
+    .balance-card {
+        background: linear-gradient(135deg, #1a2d4a 0%, #0e1d33 60%, #0a1525 100%);
+        border: 1px solid rgba(201,168,76,0.3);
+        border-radius: 24px;
+        padding: 36px 40px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 60px rgba(201,168,76,0.08);
+        animation: cardEntry 0.6s 0.1s cubic-bezier(0.34,1.56,0.64,1) both;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .balance-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 80px rgba(201,168,76,0.12);
+    }
+
+    .balance-card-bg {
+        position: absolute;
+        inset: 0;
+        background: 
+            radial-gradient(ellipse 70% 70% at 80% 20%, rgba(201,168,76,0.08) 0%, transparent 60%),
+            repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(201,168,76,0.01) 30px, rgba(201,168,76,0.01) 31px);
+    }
+
+    .balance-content { position: relative; z-index: 1; }
+
+    .balance-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 40px;
+    }
+
+    .balance-label {
+        font-size: 0.65rem;
+        letter-spacing: 3px;
+        color: rgba(201,168,76,0.6);
+        margin-bottom: 12px;
+    }
+
+    .balance-amount {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+    }
+
+    .balance-currency {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2rem;
+        color: var(--gold);
+        opacity: 0.7;
+    }
+
+    .balance-num {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 3.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        line-height: 1;
+        animation: countUp 0.8s ease;
+    }
+
+    @keyframes countUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .balance-logo {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--gold);
+        letter-spacing: 2px;
+    }
+
+    .balance-bottom {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .balance-chip {
+        width: 44px;
+        height: 32px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, var(--gold) 0%, #a8832a 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .balance-chip::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0; right: 0;
+        height: 1px;
+        background: rgba(0,0,0,0.2);
+        transform: translateY(-50%);
+    }
+
+    .balance-acc-full {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        letter-spacing: 2px;
+    }
+
+    .balance-type {
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
+
+    /* Section Header */
+    .section-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        letter-spacing: 1px;
+    }
+
+    /* Actions Grid */
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .action-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 28px 16px;
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        text-decoration: none;
+        transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+        position: relative;
+        overflow: hidden;
+        gap: 10px;
+        animation: actionEntry 0.5s ease both;
+    }
+
+    .action-card:nth-child(1) { animation-delay: 0.1s; }
+    .action-card:nth-child(2) { animation-delay: 0.15s; }
+    .action-card:nth-child(3) { animation-delay: 0.2s; }
+    .action-card:nth-child(4) { animation-delay: 0.25s; }
+    .action-card:nth-child(5) { animation-delay: 0.3s; }
+    .action-card:nth-child(6) { animation-delay: 0.35s; }
+    .action-card:nth-child(7) { animation-delay: 0.4s; }
+    .action-card:nth-child(8) { animation-delay: 0.45s; }
+
+    @keyframes actionEntry {
+        from { opacity: 0; transform: scale(0.9) translateY(10px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .action-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, rgba(201,168,76,0.1) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .action-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        border-color: var(--gold);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3), var(--shadow-gold);
+    }
+
+    .action-card:hover::before { opacity: 1; }
+
+    .action-icon-wrap {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(201,168,76,0.2);
+        transition: all 0.3s ease;
+        background: rgba(201,168,76,0.05);
+    }
+
+    .action-card:hover .action-icon-wrap {
+        background: rgba(201,168,76,0.12);
+        border-color: var(--gold);
+        box-shadow: 0 0 20px rgba(201,168,76,0.2);
+    }
+
+    .action-icon-wrap svg { color: var(--gold); }
+
+    .action-label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        letter-spacing: 0.5px;
+        text-align: center;
+    }
+
+    .action-desc {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+        text-align: center;
+    }
+
+    /* Limits */
+    .limits-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 40px;
+    }
+
+    .limit-item {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 20px 24px;
+        animation: cardEntry 0.6s ease both;
+    }
+
+    .limit-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .limit-name {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        color: var(--text-secondary);
+    }
+
+    .limit-value {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.9rem;
+        color: var(--gold);
+    }
+
+    .limit-bar {
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(255,255,255,0.05);
+        overflow: hidden;
+    }
+
+    .limit-fill {
+        height: 100%;
+        border-radius: 2px;
+        animation: fillBar 1s 0.5s ease both;
+        transform-origin: left;
+    }
+
+    @keyframes fillBar {
+        from { transform: scaleX(0); }
+        to { transform: scaleX(1); }
+    }
+</style>
+{% endblock %}
