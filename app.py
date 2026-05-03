@@ -92,7 +92,7 @@ def register():
         db.session.commit()
         
         # Send email AFTER saving — so a mail failure doesn't break registration
-        send_welcome_email(user.email, user.name, user.account_no, request.form['pin'])
+        # send_welcome_email(user.email, user.name, user.account_no, request.form['pin'])
         msg = f'Account created successfully! Account No: {account_no} — please login.'
         return render_template('home.html', msg=msg)
 
