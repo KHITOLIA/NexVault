@@ -135,7 +135,7 @@ MySQL Database (Railway Cloud)
 
 ### 🚧 Issue: App crash after registration
 
-**Solution:** Identified template rendering issue and improved error handling.
+**Solution:** Identified template rendering issue and improved error handling. 
 
 ---
 
