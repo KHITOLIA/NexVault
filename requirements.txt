@@ -1,9 +1,9 @@
 flask
 flask-sqlalchemy
-flask-mail
 sqlalchemy
 gunicorn
 pymysql
 cryptography
 python-dotenv
 numpy
+requests
