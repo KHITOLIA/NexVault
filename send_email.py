@@ -1,77 +1,86 @@
+# https://myaccount.google.com/apppasswords go to this link and get your password
 import smtplib
+import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-EMAIL_ADDRESS = "tushar@trainingbasket.co"  # https://myaccount.google.com/apppasswords go to this link and get your password
-EMAIL_PASSWORD = "zfuz wysw gcxy hdxr"
+EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS", "tushar@trainingbasket.co")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "zfuz wysw gcxy hdxr")
+
 
 def send_welcome_email(receiver_email, name, account_no, pin):
-
-    subject = "Welcome to our Bank Service"
-
-    body = f"""
-    Hello {name},
-
-    Thank you for registering with Apna Bank Bandhan.
-    Login credentials: 
-    Account No : {account_no}
-    Pin : {pin} 
-
-    You can now login.
-
-    Regards,
-    Tushar
-    """
-
-    msg = MIMEMultipart()
-    msg["From"] = EMAIL_ADDRESS
-    msg["To"] = receiver_email
-    msg["Subject"] = subject
-
-    msg.attach(MIMEText(body, "plain"))
-
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
-
-    server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-
-    server.send_message(msg)
-
-    server.quit()
-
-    print("Email sent successfully")
-
-def send_forget_pin(name, account_no ,pin, receiver_email):
-    subject = "Welcome to our Bank Service"
+    subject = "Welcome to NexVault — Your Account is Ready"
 
     body = f"""
-    Hello {name},
+Hello {name},
 
-    Regenerated pin for your account
-    Login credentials: 
-    Account No : {account_no}
-    Pin : {pin} 
+Your NexVault account has been created successfully.
 
-    You can now login.
+━━━━━━━━━━━━━━━━━━━━━━━
+  Account No : {account_no}
+  PIN        : {pin}
+━━━━━━━━━━━━━━━━━━━━━━━
 
-    Regards,
-    Tushar
+Please keep your PIN confidential and do not share it with anyone.
+
+You can now login at your NexVault portal.
+
+Regards,
+NexVault Banking
     """
 
-    msg = MIMEMultipart()
-    msg["From"] = EMAIL_ADDRESS
-    msg["To"] = receiver_email
-    msg["Subject"] = subject
+    try:
+        msg = MIMEMultipart()
+        msg["From"] = EMAIL_ADDRESS
+        msg["To"] = receiver_email
+        msg["Subject"] = subject
+        msg.attach(MIMEText(body, "plain"))
 
-    msg.attach(MIMEText(body, "plain"))
+        # ✅ Using SSL on port 465 — works on Railway (port 587/STARTTLS is blocked)
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.send_message(msg)
 
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
+        print(f"Welcome email sent to {receiver_email}")
 
-    server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+    except Exception as e:
+        print(f"Failed to send welcome email: {e}")
+        raise  # re-raise so the caller's try/except can log it
 
-    server.send_message(msg)
 
-    server.quit()
+def send_forget_pin(name, account_no, pin, receiver_email):
+    subject = "NexVault — Your PIN Has Been Reset"
 
-    print("Email sent successfully")
+    body = f"""
+Hello {name},
+
+Your NexVault PIN has been reset as requested.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+  Account No : {account_no}
+  New PIN    : {pin}
+━━━━━━━━━━━━━━━━━━━━━━━
+
+If you did not request this reset, please contact support immediately.
+
+Regards,
+NexVault Banking
+    """
+
+    try:
+        msg = MIMEMultipart()
+        msg["From"] = EMAIL_ADDRESS
+        msg["To"] = receiver_email
+        msg["Subject"] = subject
+        msg.attach(MIMEText(body, "plain"))
+
+        # ✅ Using SSL on port 465
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.send_message(msg)
+
+        print(f"PIN reset email sent to {receiver_email}")
+
+    except Exception as e:
+        print(f"Failed to send PIN reset email: {e}")
+        raise
