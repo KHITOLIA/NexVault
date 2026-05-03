@@ -129,7 +129,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         msg = f'Your account has been created \n Account No: {account_no} \n please login to use services'
-        # send_welcome_email(user.email, user.name, user.account_no, request.form['pin'])
+        send_welcome_email(user.email, user.name, user.account_no, request.form['pin'])
         return render_template('home.html', msg = msg)
     
     return render_template('register.html')
