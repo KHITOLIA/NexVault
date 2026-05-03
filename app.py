@@ -5,6 +5,7 @@ import hashlib, time
 from datetime import datetime, timedelta, date
 from dotenv import load_dotenv
 import numpy as np
+from send_email import send_welcome_email, send_forget_pin
 
 load_dotenv()
 import os
