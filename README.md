@@ -1,10 +1,3 @@
-Nice — turning this into a **portfolio-grade project page** is exactly what will make your project stand out 🔥
-I’ll give you a **clean, recruiter-focused version** you can use on:
-
-* GitHub README
-* Portfolio website
-* LinkedIn project section
-
 ---
 
 # 🌐 NexVault – Full Stack Banking System
@@ -157,6 +150,7 @@ MySQL Database (Railway Cloud)
 * OTP verification system
 * Async email processing (Celery / background jobs)
 * Financial analytics dashboard
+* Fraud Detection System for having unusual Transactions/Patterns(Freeze by Admin)
 
 ---
 
@@ -171,15 +165,5 @@ Focused on building scalable, real-world applications with strong backend system
 ## ⭐ Why This Project Matters
 
 This project goes beyond a basic CRUD app — it simulates **core banking workflows**, integrates **security practices**, and is **deployed in a production-like environment**, making it a strong portfolio piece for backend and full-stack roles.
-
----
-
-## 💡 Tip for You
-
-If you're adding this to your portfolio site, I recommend:
-
-* Add screenshots (Dashboard, Transactions)
-* Add a short demo video (30–60 sec)
-* Mention challenges (interviewers LOVE that)
 
 ---
