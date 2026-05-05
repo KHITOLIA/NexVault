@@ -5,10 +5,12 @@ import hashlib, time
 from datetime import datetime, timedelta, date
 from dotenv import load_dotenv
 import numpy as np
-from send_email import send_welcome_email, send_forget_pin
-
 load_dotenv()
 import os
+import pandas as pd
+from flask_mail import Mail, Message
+
+
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "nexvault-secret-2025")
@@ -19,9 +21,77 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_pre_ping": True,
     "pool_timeout": 30
 }
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///atm.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT", 587))
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_DEFAULT_SENDER")    
 
+mail = Mail(app)
 db = SQLAlchemy(app)
+
+def send_welcome_email(receiver_email, name, account_no, pin):
+    try:
+        msg = Message(
+            subject="Welcome to NexVault — Your Account is Ready",
+            recipients=[receiver_email]
+        )
+
+        msg.body = f"""
+Hello {name},
+
+Your NexVault account has been created successfully.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+Account No : {account_no}
+PIN        : {pin}
+━━━━━━━━━━━━━━━━━━━━━━━
+
+Please keep your PIN confidential.
+
+Regards,
+NexVault Banking
+"""
+
+        mail.send(msg)
+        print(f"Welcome email sent to {receiver_email}")
+
+    except Exception as e:
+        print(f"Email failed: {e}")
+        raise
+
+def send_forget_pin(name, account_no, pin, receiver_email):
+    try:
+        msg = Message(
+            subject="NexVault — Your PIN Has Been Reset",
+            recipients=[receiver_email]
+        )
+
+        msg.body = f"""
+Hello {name},
+
+Your PIN has been reset.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+Account No : {account_no}
+New PIN    : {pin}
+━━━━━━━━━━━━━━━━━━━━━━━
+
+If you did not request this, contact support.
+
+Regards,
+NexVault Banking
+"""
+
+        mail.send(msg)
+        print(f"PIN reset email sent to {receiver_email}")
+
+    except Exception as e:
+        print(f"Email failed: {e}")
+        raise
 
 
 # ================= USER TABLE =================
@@ -32,6 +102,7 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(200), unique=True, nullable=False)
     pin = db.Column(db.String(256), nullable=False)
+    transaction_pin = db.Column(db.String(256), nullable = True)
     balance = db.Column(db.Float, default=0)
     role = db.Column(db.String(10), default='user')
     withdraw_limit = db.Column(db.Float, default=20000)
@@ -69,12 +140,10 @@ class Transfer(db.Model):
 def hash_pin(pin):
     return hashlib.sha256(str(pin).encode()).hexdigest()
 
-
 # ==================== HOME ====================
 @app.route("/")
 def home():
     return render_template("home.html")
-
 
 # ==================== REGISTER ====================
 @app.route("/register", methods=['GET', 'POST'])
@@ -85,6 +154,7 @@ def register():
             account_no=account_no,
             name=request.form['name'],
             pin=hash_pin(request.form['pin']),
+            transaction_pin = request.form['transaction_pin'],
             balance=request.form['balance'],
             email=request.form['email'],
             security_answer=request.form['security_answer']
@@ -134,8 +204,9 @@ def login():
 
         db.session.commit()
         return render_template('login.html', error="Wrong PIN")
-
     return render_template('login.html')
+
+ 
 
 
 # ==================== DASHBOARD ====================
@@ -389,6 +460,14 @@ def change_limit():
         return render_template('change_limit.html', msg=msg)
 
     return render_template("change_limit.html")
+
+@app.route('/services')
+def services():
+    return render_template('services.html')
+
+@app.route('/help')
+def help():
+    return render_template('help.html')
 
 
 # ==================== LOGOUT ====================
