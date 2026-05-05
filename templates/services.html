@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Services{% endblock %}
+
+{% block content %}
+
+<div class="services-wrapper">
+
+    <!-- Header -->
+    <div class="services-header">
+        <h1 class="page-title">Our Banking Services</h1>
+        <p class="page-subtitle">
+            Secure, fast and intelligent banking designed for modern users
+        </p>
+    </div>
+
+    <!-- Services Grid -->
+    <div class="services-grid">
+
+        <!-- Service Card -->
+        <div class="service-card">
+            <div class="icon">💳</div>
+            <h3>Account Management</h3>
+            <p>Create and manage your bank account with secure authentication and personalized access.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="icon">💰</div>
+            <h3>Deposit Funds</h3>
+            <p>Easily deposit money with daily limits and real-time balance updates.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="icon">🏧</div>
+            <h3>Withdraw Funds</h3>
+            <p>Withdraw money securely with enforced daily withdrawal limits.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="icon">🔄</div>
+            <h3>Fund Transfer</h3>
+            <p>Transfer money between accounts instantly with transaction validation.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="icon">📊</div>
+            <h3>Transaction History</h3>
+            <p>View detailed records of all deposits, withdrawals, and transfers.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="icon">📅</div>
+            <h3>Bank Statement</h3>
+            <p>Generate account statements for custom date ranges with summaries.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="icon">🔐</div>
+            <h3>Security Features</h3>
+            <p>PIN encryption, account lock after failed attempts, and secure sessions.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="icon">📧</div>
+            <h3>Email Notifications</h3>
+            <p>Receive account updates like registration confirmation and PIN reset emails.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="icon">⚙️</div>
+            <h3>Custom Limits</h3>
+            <p>Set daily limits for deposits, withdrawals, and transfers.</p>
+        </div>
+    </div>
+    <!-- CTA -->
+    <div class="cta-section">
+        
+    </div>
+
+</div>
+
+<style>
+
+.services-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 120px 40px 60px;
+    text-align: center;
+}
+
+.services-header {
+    margin-bottom: 50px;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.service-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    padding: 28px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-deep);
+}
+
+.icon {
+    font-size: 2rem;
+    margin-bottom: 14px;
+}
+
+.service-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+}
+
+.service-card p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.cta-section {
+    margin-top: 60px;
+}
+
+.cta-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    margin-bottom: 10px;
+}
+
+.btn-primary {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 10px 24px;
+    border-radius: 25px;
+    background: var(--gold);
+    color: black;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+</style>
+
+{% endblock %}

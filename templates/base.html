@@ -459,49 +459,6 @@
             background: var(--success);
             animation: pulse 2s ease-in-out infinite;
         }
-        .social-icons {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-left: 10px;
-    }
-    
-    .icon {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        color: var(--text-secondary);
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(201,168,76,0.15);
-        transition: all 0.3s ease;
-    }
-    
-    .icon svg {
-        width: 18px;
-        height: 18px;
-    }
-    
-    /* Hover Glow Effects */
-    .icon:hover {
-        transform: translateY(-2px) scale(1.05);
-    }
-    
-    /* GitHub Glow */
-    .icon.github:hover {
-        color: #ffffff;
-        box-shadow: 0 0 12px rgba(255,255,255,0.4);
-        border-color: rgba(255,255,255,0.5);
-    }
-    
-    /* LinkedIn Glow */
-    .icon.linkedin:hover {
-        color: #0a66c2;
-        box-shadow: 0 0 12px rgba(10,102,194,0.6);
-        border-color: rgba(10,102,194,0.6);
-    }
 
         @keyframes pulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(76,175,130,0.4); }
@@ -529,7 +486,49 @@
             opacity: 0.4;
             margin: 24px 0;
         }
+        .social-icons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: 10px;
+        }
 
+        .icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(201,168,76,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Hover Glow Effects */
+        .icon:hover {
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        /* GitHub Glow */
+        .icon.github:hover {
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(255,255,255,0.4);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        /* LinkedIn Glow */
+        .icon.linkedin:hover {
+            color: #0a66c2;
+            box-shadow: 0 0 12px rgba(10,102,194,0.6);
+            border-color: rgba(10,102,194,0.6);
+        }
         @keyframes shimmer {
             0% { background-position: -200% center; }
             100% { background-position: 200% center; }
@@ -550,8 +549,10 @@
             <li><a href="/show_details">Profile</a></li>
             <li><a href="/logout" style="color: var(--danger);">Logout</a></li>
             {% else %}
-            <li><a href="/login">Login</a></li>
             <li><a href="/register">Register</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/help">Help</a></li>
             {% endif %}
         </ul>
     </nav>
@@ -559,13 +560,13 @@
     {% block content %}{% endblock %}
 
     <footer>
-        <!-- Creator Info -->
+    <!-- Creator Info -->
 <span style="color: var(--gold); margin-left: 10px;">
-    Created by Tushar Khitoliya
+    Developed by Tushar Khitoliya
 </span>
 
 <div class="social-icons">
-    <a href="https://github.com/KHITOLIA/NexVault/tree/main" target="_blank" class="icon github" title="GitHub">
+    <a href="https://github.com/KHITOLIA" target="_blank" class="icon github" title="GitHub">
         <!-- GitHub SVG -->
         <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58 
@@ -595,7 +596,7 @@
 <span style="color: var(--text-muted); font-size: 0.7rem; margin-left: 10px;">
     Open for collaborations
 </span>
-    </footer>
+</footer>
 
     <script>
         // Particle system

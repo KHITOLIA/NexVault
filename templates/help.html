@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}NexVault — Help & Support{% endblock %}
+
+{% block content %}
+<div class="help-wrapper">
+
+    <h1 class="page-title">Help & Support</h1>
+    <p class="page-subtitle">Find answers, guides, and assistance for using NexVault</p>
+
+    <!-- ================= FAQ ================= -->
+    <div class="help-section">
+        <h2>📌 Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <h3>🔐 I forgot my PIN. What should I do?</h3>
+            <p>Go to the <b>Forget PIN</b> page, enter your account number and security answer. A new PIN will be sent to your registered email.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>💳 Why is my account locked?</h3>
+            <p>Your account gets locked after 3 incorrect PIN attempts. It will automatically unlock after 3 minutes.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>💸 Why can't I withdraw or transfer money?</h3>
+            <p>You might have exceeded your daily limit. You can update limits in the <b>Change Limit</b> section.</p>
+        </div>
+
+        <div class="faq-item">
+            <h3>📧 I didn’t receive email notifications</h3>
+            <p>Check spam folder. Sometimes SMTP delays may occur due to server issues.</p>
+        </div>
+    </div>
+
+    <!-- ================= USER GUIDE ================= -->
+    <div class="help-section">
+        <h2>📘 How to Use NexVault</h2>
+
+        <ul class="guide-list">
+            <li>🆕 Register your account with name, email, and PIN</li>
+            <li>🔐 Login using Account Number + PIN</li>
+            <li>💰 Deposit / Withdraw money</li>
+            <li>🔁 Transfer funds to another account</li>
+            <li>📊 View transaction history and statements</li>
+            <li>⚙️ Update limits and change PIN</li>
+        </ul>
+    </div>
+
+    <!-- ================= SECURITY ================= -->
+    <div class="help-section">
+        <h2>🛡️ Security Tips</h2>
+
+        <ul class="guide-list">
+            <li>Never share your PIN with anyone</li>
+            <li>Always logout after using your account</li>
+            <li>Use strong and unique PIN</li>
+            <li>Report suspicious activity immediately</li>
+        </ul>
+    </div>
+
+    <!-- ================= CONTACT ================= -->
+    <div class="help-section">
+        <h2>📞 Contact Support</h2>
+
+        <p>If you need help, reach out to us:</p>
+
+        <div class="contact-box">
+            <p><b>Email:</b> support@nexvault.com</p>
+            <p><b>Response Time:</b> Within 24 hours</p>
+        </div>
+    </div>
+
+    <div class="text-center" style="margin-top: 40px;">
+        <a href="/dashboard" class="btn-ghost">← Back to Dashboard</a>
+    </div>
+
+</div>
+
+<style>
+.help-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 100px 30px 60px;
+}
+
+.help-section {
+    margin-top: 40px;
+    padding: 20px;
+    background: var(--glass);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+}
+
+.help-section h2 {
+    margin-bottom: 16px;
+    color: var(--text-secondary);
+}
+
+.faq-item {
+    margin-bottom: 16px;
+}
+
+.faq-item h3 {
+    font-size: 0.9rem;
+    color: var(--gold);
+}
+
+.faq-item p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.guide-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.guide-list li {
+    padding: 8px 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.contact-box {
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.2);
+}
+</style>
+
+{% endblock %}
