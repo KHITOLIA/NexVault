@@ -391,13 +391,13 @@ def change_limit():
     return render_template("change_limit.html")
 
 
-@app.route("/services")
+@app.route('/services')
 def services():
-    return render_template("services.html")
+    return render_template('services.html')
 
-@app.route("/help")
-def services():
-    return render_template("help.html")
+@app.route('/help')
+def help():
+    return render_template('help.html')
 
 # ==================== LOGOUT ====================
 @app.route("/logout")
