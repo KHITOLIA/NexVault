@@ -6,9 +6,12 @@ from datetime import datetime, timedelta, date
 from dotenv import load_dotenv
 import numpy as np
 import pandas as pd
-
-
-
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from io import BytesIO
+from flask import send_file
+import plotly.express as px
 
 load_dotenv()
 import os
@@ -359,7 +362,7 @@ def forget_pin():
             #     send_forget_pin(user.name, user.account_no, new_pin, user.email)
             # except Exception as e:
             #     print(f"Email failed: {e}")
-            return render_template('home.html', msg='PIN reset successful — check your email{new_pin}')
+            return render_template('home.html', msg=f'PIN reset successful — check your email{new_pin}')
 
         return render_template('home.html', msg="Account not found or wrong answer")
 
@@ -438,10 +441,72 @@ def analytics():
     last_month = df_expenses[df_expenses['timestamp'] >= datetime.now() - timedelta(days = 30)]
     monthly_total = last_month['amount'].sum()
 
-    return render_template('analytics.html', 
-                           weekly_total = weekly_total, monthly_total = monthly_total)
+
+    # Weekly graph
+    weekly_group = last_week.groupby(last_week['timestamp'].dt.date)['amount'].sum().reset_index()
+    fig_week = px.bar(weekly_group, x='timestamp', y='amount', title='Weekly Expenses')
+
+    # Monthly graph
+    monthly_group = last_month.groupby(last_month['timestamp'].dt.date)['amount'].sum().reset_index()
+    fig_month = px.line(monthly_group, x='timestamp', y='amount', title='Monthly Expenses')
+
+    fig_week.update_layout(
+    height=300,
+    margin=dict(l=20, r=20, t=40, b=20)
+    )
+
+    fig_month.update_layout(
+        height=300,
+        margin=dict(l=20, r=20, t=40, b=20)
+    )
 
 
+    graph_week = fig_week.to_html(full_html=False)
+    graph_month = fig_month.to_html(full_html=False)
+
+    return render_template(
+    'analytics.html',
+    weekly_total=weekly_total,
+    monthly_total=monthly_total,
+    graph_week=graph_week,
+    graph_month=graph_month
+)
+
+
+
+
+@app.route('/download_statement_pdf')
+def download_statement_pdf():
+    if "account" not in session:
+        return redirect("/login")
+
+    user_acc = session['account']
+
+    transactions = Transaction.query.filter_by(account_no=user_acc).all()
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+
+    data = [["Date", "Type", "Amount"]]
+
+    for t in transactions:
+        data.append([
+            t.timestamp.strftime("%d-%m-%Y %H:%M"),
+            t.type,
+            f"{t.amount}"
+        ])
+
+    table = Table(data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.grey),
+        ('TEXTCOLOR',(0,0),(-1,0),colors.whitesmoke),
+        ('GRID', (0,0), (-1,-1), 1, colors.black)
+    ]))
+
+    doc.build([table])
+    buffer.seek(0)
+
+    return send_file(buffer, as_attachment=True, download_name="statement.pdf", mimetype='application/pdf')
 
 
 
