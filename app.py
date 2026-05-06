@@ -5,7 +5,86 @@ import hashlib, time
 from datetime import datetime, timedelta, date
 from dotenv import load_dotenv
 import numpy as np
-from send_email import send_welcome_email, send_forget_pin
+from functools import wraps
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+EMAIL_ADDRESS = "tushar@trainingbasket.co"  # https://myaccount.google.com/apppasswords go to this link and get your password
+EMAIL_PASSWORD = "zfuz wysw gcxy hdxr"
+
+def send_welcome_email(receiver_email, name, account_no, pin):
+
+    subject = "Welcome to our Bank Service"
+
+    body = f"""
+    Hello {name},
+
+    Thank you for registering with Apna Bank Bandhan.
+    Login credentials: 
+    Account No : {account_no}
+    Pin : {pin} 
+
+    You can now login.
+
+    Regards,
+    Tushar
+    """
+
+    msg = MIMEMultipart()
+    msg["From"] = EMAIL_ADDRESS
+    msg["To"] = receiver_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+
+    server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+
+    server.send_message(msg)
+
+    server.quit()
+
+    print("Email sent successfully")
+
+def send_forget_pin(name, account_no ,pin, receiver_email):
+    subject = "Welcome to our Bank Service"
+
+    body = f"""
+    Hello {name},
+
+    Regenerated pin for your account
+    Login credentials: 
+    Account No : {account_no}
+    Pin : {pin} 
+
+    You can now login.
+
+    Regards,
+    Tushar
+    """
+
+    msg = MIMEMultipart()
+    msg["From"] = EMAIL_ADDRESS
+    msg["To"] = receiver_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
+
+    server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+
+    server.send_message(msg)
+
+    server.quit()
+
+    print("Email sent successfully")
+
 
 load_dotenv()
 import os
@@ -356,7 +435,7 @@ def forget_pin():
                 send_forget_pin(user.name, user.account_no, new_pin, user.email)
             except Exception as e:
                 print(f"Email failed: {e}")
-            return render_template('home.html', msg='PIN reset successful — check your email')
+            return render_template('home.html', msg='PIN reset successful — check your email{new_pin}')
 
         return render_template('home.html', msg="Account not found or wrong answer")
 
@@ -399,6 +478,79 @@ def services():
 def help():
     return render_template('help.html')
 
+
+# ==================Admin==================
+def admin_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if "account" not in session:
+            return redirect('/login')
+        
+        user = User.query.get(session['account'])
+
+        if not user or user.role != 'admin':
+            return "Unauthorized", 403
+        
+        return f(*args, **kwargs)
+    return wrapper
+
+
+@app.route('/admin')
+@admin_required
+def admin_dashboard():
+    users = User.query.all()
+    transactions = Transaction.query.order_by(Transaction.timestamp.desc()).limit(20)
+
+    total_users = User.query.count()
+    total_balance = sum(u.balance for u in users)
+
+    return render_template('admin_dashboad.html',
+                           users = users,
+                           transactions = transactions,
+                           total_users = total_users,
+                           total_balance = total_balance)
+
+
+@app.route('/admin/toggle_lock/<account_no>')
+@admin_required
+def toggle_lock(account_no):
+    user = User.query.get(account_no)
+    user.is_locked = not user.is_locked
+    db.session.commit()
+    return redirect('/admin')
+
+
+@app.route('/admin/delete_user/<account_no>')
+@admin_required
+def delete_user(account_no):
+    user = User.query.get(account_no)
+    db.session.delete(user)
+    db.session.commit()
+    return redirect('/admin')
+
+
+@app.route('/admin/reset_pin/<account_no>')
+@admin_required
+def admin_reset_pin(account_no):
+    user = User.query.get(account_no)
+    new_pin = str(np.random.randint(100000, 999999))
+    user.pin = hash_pin(new_pin)
+    db.session.commit()
+
+    return f"New PIN for {user.name}: {new_pin}"
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ==================== LOGOUT ====================
 @app.route("/logout")
 def logout():
@@ -412,4 +564,4 @@ with app.app_context():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))           # ✅ FIXED: reads Railway's PORT
-    app.run(host="0.0.0.0", port=port, debug=False)    # ✅ FIXED: host must be 0.0.0.0
+    app.run(host="0.0.0.0", port=port, debug=True)    # ✅ FIXED: host must be 0.0.0.0
