@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+
+<br></br>
+<br></br>
+<h2>📊 Expense Analytics</h2>
+
+<div>
+    <h3>Last 7 Days</h3>
+    <p>Total: ₹{{ weekly_total }}</p>
+    <div style="max-width: 600px; margin: auto;">
+        {{ graph_week | safe }}
+    </div>
+
+</div>
+
+<div>
+    <h3>Last 30 Days</h3>
+    <p>Total: ₹{{ monthly_total }}</p>
+    <div style="max-width: 600px; margin: auto; margin-top: 20px;">
+        {{ graph_month | safe }}
+    </div>
+</div>
+
+<div class="mt-6 text-center">
+    <a href="/dashboard" class="btn-ghost">← Back to Dashboard</a>
+</div>
+
+{% endblock %}
