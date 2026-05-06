@@ -5,85 +5,9 @@ import hashlib, time
 from datetime import datetime, timedelta, date
 from dotenv import load_dotenv
 import numpy as np
-from functools import wraps
+import pandas as pd
 
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
-EMAIL_ADDRESS = "tushar@trainingbasket.co"  # https://myaccount.google.com/apppasswords go to this link and get your password
-EMAIL_PASSWORD = "zfuz wysw gcxy hdxr"
-
-def send_welcome_email(receiver_email, name, account_no, pin):
-
-    subject = "Welcome to our Bank Service"
-
-    body = f"""
-    Hello {name},
-
-    Thank you for registering with Apna Bank Bandhan.
-    Login credentials: 
-    Account No : {account_no}
-    Pin : {pin} 
-
-    You can now login.
-
-    Regards,
-    Tushar
-    """
-
-    msg = MIMEMultipart()
-    msg["From"] = EMAIL_ADDRESS
-    msg["To"] = receiver_email
-    msg["Subject"] = subject
-
-    msg.attach(MIMEText(body, "plain"))
-
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
-
-    server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-
-    server.send_message(msg)
-
-    server.quit()
-
-    print("Email sent successfully")
-
-def send_forget_pin(name, account_no ,pin, receiver_email):
-    subject = "Welcome to our Bank Service"
-
-    body = f"""
-    Hello {name},
-
-    Regenerated pin for your account
-    Login credentials: 
-    Account No : {account_no}
-    Pin : {pin} 
-
-    You can now login.
-
-    Regards,
-    Tushar
-    """
-
-    msg = MIMEMultipart()
-    msg["From"] = EMAIL_ADDRESS
-    msg["To"] = receiver_email
-    msg["Subject"] = subject
-
-    msg.attach(MIMEText(body, "plain"))
-
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
-
-    server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-
-    server.send_message(msg)
-
-    server.quit()
-
-    print("Email sent successfully")
 
 
 load_dotenv()
@@ -172,11 +96,11 @@ def register():
         db.session.commit()
 
         # Send email AFTER saving — so a mail failure doesn't break registration
-        try:
+        # try:
 
-            send_welcome_email(user.email, user.name, user.account_no, request.form['pin'])
-        except Exception as e:
-            print(f"Email failed (non-critical): {e}")
+        #     send_welcome_email(user.email, user.name, user.account_no, request.form['pin'])
+        # except Exception as e:
+        #     print(f"Email failed (non-critical): {e}")
 
         msg = f'Account created successfully! Account No: {account_no} — please login.'
         return render_template('home.html', msg=msg)
@@ -430,11 +354,11 @@ def forget_pin():
             new_pin = str(np.random.randint(100000, 999999))          # ✅ FIXED: hash() is not hashlib
             user.pin = hash_pin(new_pin)
             db.session.commit()
-            try:
+            # try:
 
-                send_forget_pin(user.name, user.account_no, new_pin, user.email)
-            except Exception as e:
-                print(f"Email failed: {e}")
+            #     send_forget_pin(user.name, user.account_no, new_pin, user.email)
+            # except Exception as e:
+            #     print(f"Email failed: {e}")
             return render_template('home.html', msg='PIN reset successful — check your email{new_pin}')
 
         return render_template('home.html', msg="Account not found or wrong answer")
@@ -479,68 +403,43 @@ def help():
     return render_template('help.html')
 
 
-# ==================Admin==================
-def admin_required(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        if "account" not in session:
-            return redirect('/login')
-        
-        user = User.query.get(session['account'])
+# =================Analytics=======================
+@app.route('/analytics')
+def analytics():
+    if "account" not in session:
+        return redirect('/login')
+    
+    user_acc = session['account']
 
-        if not user or user.role != 'admin':
-            return "Unauthorized", 403
-        
-        return f(*args, **kwargs)
-    return wrapper
+    transactions = Transaction.query.filter_by(account_no = user_acc).all()
 
+    if not transactions:
+        return "No Data Available"
+    
+    data = []
 
-@app.route('/admin')
-@admin_required
-def admin_dashboard():
-    users = User.query.all()
-    transactions = Transaction.query.order_by(Transaction.timestamp.desc()).limit(20)
+    for t in transactions:
+        data.append({
+            'type' : t.type,
+            'amount' : t.amount,
+            'timestamp' : t.timestamp
+        })
+    
+    df = pd.DataFrame(data)
 
-    total_users = User.query.count()
-    total_balance = sum(u.balance for u in users)
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
 
-    return render_template('admin_dashboad.html',
-                           users = users,
-                           transactions = transactions,
-                           total_users = total_users,
-                           total_balance = total_balance)
+    # filter the expenses
+    df_expenses = df[df['type'].isin(['withdraw'])]
 
+    last_week = df_expenses[df_expenses['timestamp'] >= datetime.now() - timedelta(days = 7)]
+    weekly_total = last_week['amount'].sum()
 
-@app.route('/admin/toggle_lock/<account_no>')
-@admin_required
-def toggle_lock(account_no):
-    user = User.query.get(account_no)
-    user.is_locked = not user.is_locked
-    db.session.commit()
-    return redirect('/admin')
+    last_month = df_expenses[df_expenses['timestamp'] >= datetime.now() - timedelta(days = 30)]
+    monthly_total = last_month['amount'].sum()
 
-
-@app.route('/admin/delete_user/<account_no>')
-@admin_required
-def delete_user(account_no):
-    user = User.query.get(account_no)
-    db.session.delete(user)
-    db.session.commit()
-    return redirect('/admin')
-
-
-@app.route('/admin/reset_pin/<account_no>')
-@admin_required
-def admin_reset_pin(account_no):
-    user = User.query.get(account_no)
-    new_pin = str(np.random.randint(100000, 999999))
-    user.pin = hash_pin(new_pin)
-    db.session.commit()
-
-    return f"New PIN for {user.name}: {new_pin}"
-
-
-
+    return render_template('analytics.html', 
+                           weekly_total = weekly_total, monthly_total = monthly_total)
 
 
 
